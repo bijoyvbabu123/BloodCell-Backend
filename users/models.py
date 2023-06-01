@@ -6,6 +6,10 @@ from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .managers import UserManager
+from .utilities import (
+    create_verification_email,
+    EmailUtil,
+)
 
 
 # Create your models here.
@@ -62,3 +66,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+    
+    def send_verification_email(self, request):
+        access_token = self.generate_tokens()['access']
+        v_mail = create_verification_email(request=request, user=self, token=access_token)
+        EmailUtil.send_email(v_mail)
+        
