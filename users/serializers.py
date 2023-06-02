@@ -75,3 +75,16 @@ class LoginSerializer(serializers.Serializer):
         if not User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email does not exists")
         return value
+
+
+# resend verification mail serializer
+class ResendVerificationMailSerializer(serializers.Serializer):
+    """
+    request : email (char field; required; in body)
+    """
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("User with this email does not exists")
+        return value

@@ -10,6 +10,7 @@ from rest_framework import status
 from .serializers import (
     SignUpSerializer,
     LoginSerializer,
+    ResendVerificationMailSerializer,
 )
 from .utilities import (
     check_and_verify_user,
@@ -76,3 +77,30 @@ class LoginView(APIView):
 
 
         return Response({'password': ["Wrong Password"]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# view to resend the verification mail
+class ResendVerificationMailView(APIView):
+    """
+    resends the verification mail to the user.
+    use this endpoint only if the user is not verified.
+    returns status 200 with message if the mail is sent successfully.
+    """
+
+    serializer_class = ResendVerificationMailSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        curr_user_email = serializer.validated_data['email']
+        curr_user = User.objects.get(email=curr_user_email)
+
+        # check if the user has verified their email and raise error if not
+        if curr_user.is_email_verified:
+            return Response({'email': ["Email is already verified."]}, status=status.HTTP_403_FORBIDDEN)
+        
+        # send the verification mail
+        curr_user.send_verification_email(request=request)
+
+        return Response({'email': ["Verification mail sent successfully."]}, status=status.HTTP_200_OK)
