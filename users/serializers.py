@@ -51,4 +51,27 @@ class SignUpSerializer(serializers.Serializer):
         email = validated_data.get('email', '')
         password = validated_data.get('password', '')
         return User.objects.create_user(email=email, password=password)
+
+
+class LoginSerializer(serializers.Serializer):
+    """
+    request : email, password (both char fields; required; in body)
+    only for input purpose.
+    email validation ( if the entered mail id exists )
+    """
+    email = serializers.EmailField(
+        required=True,
+        write_only=True,
+    )
+    password = serializers.CharField(
+        required=True,
+        write_only=True,
+    )
+
+    class Meta:
+        write_only_fields = ['password', 'email']
     
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("User with this email does not exists")
+        return value
