@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig', # user account management
+    'bloodrequesthandling.apps.BloodrequesthandlingConfig', # blood request handling
 ]
 
 MIDDLEWARE = [
