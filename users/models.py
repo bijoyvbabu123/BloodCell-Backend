@@ -5,10 +5,16 @@ from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from datetime import date, timedelta
+
 from .managers import UserManager
 from .utilities import (
     create_verification_email,
     EmailUtil,
+)
+from .hardcodedata import (
+    district_choices,
+    blood_group_choices,
 )
 
 
@@ -71,4 +77,154 @@ class User(AbstractBaseUser, PermissionsMixin):
         access_token = self.generate_tokens()['access']
         v_mail = create_verification_email(request=request, user=self, token=access_token)
         EmailUtil.send_email(v_mail)
-        
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
+    first_name = models.CharField(
+        _('first name'),
+        max_length=30,
+        blank=True,
+        null=True,
+        help_text=_('Add your first name.'),
+        error_messages={
+            'max_length': _('First name is too long.'),
+        }
+    )
+    last_name = models.CharField(
+        _('last name'),
+        max_length=150,
+        blank=True,
+        null=True,
+        help_text=_('Add your last name.'),
+        error_messages={
+            'max_length': _('Last name is too long.'),
+        }
+    )
+    phone_number = models.CharField(
+        _('phone number'),
+        max_length=15,
+        blank=True,
+        null=True,
+        help_text=_('Add your phone number.'),
+        error_messages={
+            'max_length': _('Phone number is too long.'),
+        }
+    )
+    address = models.CharField(
+        _('address'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_('Add your address.'),
+        error_messages={
+            'max_length': _('Address is too long.'),
+        }
+    )
+    district = models.CharField(
+        _('district'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_('Add your district.'),
+        error_messages={
+            'max_length': _('District is too long.'),
+        },
+        choices=district_choices,
+    )
+    pincode = models.CharField(
+        _('pincode'),
+        max_length=6,
+        blank=True,
+        null=True,
+        help_text=_('Add your pincode.'),
+        error_messages={
+            'max_length': _('Pincode is too long.'),
+        }
+    )
+    dateofbirth = models.DateField(
+        _('date of birth'),
+        blank=True,
+        null=True,
+        help_text=_('Add your date of birth.'),
+    )
+    blood_group = models.CharField(
+        _('blood group'),
+        max_length=3,
+        blank=True,
+        null=True,
+        help_text=_('Add your blood group.'),
+        error_messages={
+            'max_length': _('Blood group is too long.'),
+        },
+        choices=blood_group_choices,
+    )
+    last_donated_on = models.DateField(
+        _('last donated on'),
+        blank=True,
+        null=True,
+        help_text=_('Add your last donated on.'),
+    )
+
+    class Meta:
+        verbose_name = _('profile')
+        verbose_name_plural = _('profiles')
+        ordering = ('user__email',)
+    
+    def __str__(self):
+        return self.user.email+self.blood_group
+    
+    def get_full_name(self):
+        return self.first_name+' '+self.last_name
+    
+    def get_age(self):
+        today = date.today()
+        age = today.year - self.dateofbirth.year
+        if today.month < self.dateofbirth.month or (today.month == self.dateofbirth.month and today.day < self.dateofbirth.day):
+            age -= 1
+        return age
+    
+    def is_three_months_past_last_donation(self):
+        today = date.today()
+        three_months_ago = today - timedelta(days=90)
+        if self.last_donated_on < three_months_ago:
+            return True
+        return False
+    
+
+class TelegramData(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='telegramdata',
+    )
+    telegram_verification_link = models.CharField(
+        _('telegram verification link'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_('Add your telegram verification link.'),
+        error_messages={
+            'max_length': _('Telegram verification link is too long.'),
+        }
+    )
+    chat_id = models.CharField(
+        _('chat id'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=_('Add your chat id.'),
+        error_messages={
+            'max_length': _('Chat id is too long.'),
+        }
+    )
+    is_telegram_verified = models.BooleanField(
+        _('telegram verified status'),
+        default = False,
+        help_text=_('Designates whether this user has verified their telegram.'),
+    )
+    
