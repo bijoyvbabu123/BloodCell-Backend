@@ -9,6 +9,7 @@ from .views import (
     VerifyEmail,
     LoginView,
     ResendVerificationMailView,
+    ProfileUpdateView,
 )
 
 
@@ -18,4 +19,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'), # user login
     path('resend-verification-mail/', ResendVerificationMailView.as_view(), name='resend-verification-mail'), # resend verification mail
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # token refresh
+    path('profileupdate/', ProfileUpdateView.as_view(), name='profileupdate'), # profile update
 ]

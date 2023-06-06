@@ -35,3 +35,9 @@ class TelegramData(models.Model):
         help_text=_('Designates whether this user has verified their telegram.'),
     )
     
+    class Meta:
+        verbose_name = _('telegram data')
+        verbose_name_plural = _('telegram data')
+
+    def __str__(self):
+        return self.user.email

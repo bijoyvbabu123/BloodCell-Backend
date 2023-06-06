@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .model import (
+from .models import (
     User, 
     Profile,
 )

@@ -11,12 +11,18 @@ from .serializers import (
     SignUpSerializer,
     LoginSerializer,
     ResendVerificationMailSerializer,
+    ProfileUpdateSerializer,
 )
 from .utilities import (
     check_and_verify_user,
 )
 from .models import (
     User,
+    Profile,
+)
+from .custompermissions import (
+    IsAuthenticatedVerified,
+    IsVerified,
 )
 
 import jwt
@@ -104,3 +110,25 @@ class ResendVerificationMailView(APIView):
         curr_user.send_verification_email(request=request)
 
         return Response({'email': ["Verification mail sent successfully."]}, status=status.HTTP_200_OK)
+
+
+# view to update the user profile
+class ProfileUpdateView(APIView):
+    """
+    Update the UserProfile instance of the user.
+    Required fields in the request is clear from the serializer.
+    Response is a success message with status code 200.
+    """
+
+    serializer_class = ProfileUpdateSerializer
+    permission_classes = [IsAuthenticatedVerified]
+
+    def post(self, request):
+        curr_user = request.user
+        curr_user_profile = Profile.objects.get(user=curr_user)
+
+        serializer = self.serializer_class(curr_user_profile ,data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'message': 'Profile updated successfully.'}, status=status.HTTP_200_OK)
