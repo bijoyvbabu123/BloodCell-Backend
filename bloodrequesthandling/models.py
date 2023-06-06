@@ -70,6 +70,12 @@ class BloodRequirement(models.Model):
         null=True,
         help_text='Is case verified by admin. (True/False) after admin verification. None if admin has not yet verified.',
     )
+    date_of_request = models.DateField(
+        auto_now_add=True,
+        blank=False,
+        null=False,
+        help_text='Date of request.',
+    )
 
     def __str__(self):
         return self.name_of_patient + ' - ' + self.blood_group
