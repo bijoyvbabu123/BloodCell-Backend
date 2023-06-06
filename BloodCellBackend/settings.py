@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users.apps.UsersConfig', # user account management
     'bloodrequesthandling.apps.BloodrequesthandlingConfig', # blood request handling
+    'telegrambot.apps.TelegrambotConfig', # telegram bot backend
 ]
 
 MIDDLEWARE = [
