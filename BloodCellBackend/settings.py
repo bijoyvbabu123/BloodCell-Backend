@@ -28,7 +28,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -176,3 +176,8 @@ SIMPLE_JWT = {
 # custom domain settings
 PASSWORD_RESET_DOMAIN = config('PASSWORD_RESET_DOMAIN')
 
+
+# telegram bot settings
+TELEGRAM_BOT_USERNAME = config('TELEGRAM_BOT_USERNAME')
+TELEGRAM_BOT_TOKEN = config('TELEGRAM_BOT_TOKEN')
+TELEGRAM_BOT_WEBHOOK_URL = config('TELEGRAM_BOT_WEBHOOK_URL')

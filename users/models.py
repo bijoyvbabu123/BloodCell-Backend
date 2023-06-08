@@ -7,6 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from datetime import date, timedelta
 
+import base64
+
 from .managers import UserManager
 from .utilities import (
     create_verification_email,
@@ -77,6 +79,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         access_token = self.generate_tokens()['access']
         v_mail = create_verification_email(request=request, user=self, token=access_token)
         EmailUtil.send_email(v_mail)
+    
+    def get_email_base64url(self):
+        encoded_email = base64.urlsafe_b64encode(self.email.encode()).decode()
+        return encoded_email
 
 
 class Profile(models.Model):
@@ -176,7 +182,10 @@ class Profile(models.Model):
         ordering = ('user__email',)
     
     def __str__(self):
-        return self.user.email+self.blood_group
+        if self.blood_group:
+            return self.user.email+self.blood_group
+        else:
+            return self.user.email+"--"
     
     def get_full_name(self):
         return self.first_name+' '+self.last_name
