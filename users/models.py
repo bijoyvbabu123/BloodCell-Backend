@@ -195,3 +195,11 @@ class Profile(models.Model):
             return True
         return False
 
+    def is_profile_complete(self):
+        check = True
+        fields = ['first_name', 'last_name', 'phone_number', 'address', 'district', 'pincode', 'dateofbirth', 'blood_group']
+        for field in fields:
+            if getattr(self, field) is None or getattr(self, field) == '':
+                check = False
+                break
+        return check

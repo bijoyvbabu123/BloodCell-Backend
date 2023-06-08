@@ -137,3 +137,52 @@ class ProfileUpdateSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
+# profile data serializer
+class ProfileDataSerializer(serializers.Serializer):
+    user_email = serializers.EmailField(
+        max_length=255,
+    )
+    is_profile_complete = serializers.BooleanField(
+    )
+    first_name = serializers.CharField(
+        allow_blank=True,
+        allow_null=True,
+        max_length=30,
+    )
+    last_name = serializers.CharField(
+        max_length=30,
+        allow_blank=True,
+        allow_null=True,
+    )
+    phone_number = serializers.CharField(
+        max_length=10,
+        allow_blank=True,
+        allow_null=True,
+    )
+    address = serializers.CharField(
+        max_length=225,
+        allow_blank=True,
+        allow_null=True,
+    )
+    district = serializers.ChoiceField(
+        choices=district_choices,
+        allow_blank=True,
+        allow_null=True,
+    )
+    pincode = serializers.CharField(
+        max_length=6,
+        allow_blank=True,
+        allow_null=True,
+    )
+    dateofbirth = serializers.DateField(
+        allow_null=True,
+    )
+    blood_group = serializers.ChoiceField(
+        choices=blood_group_choices,
+        allow_blank=True,
+        allow_null=True,
+    )
+    last_donated_on = serializers.DateField(
+        allow_null=True,
+    )

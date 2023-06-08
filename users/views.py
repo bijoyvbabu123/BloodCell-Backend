@@ -12,6 +12,7 @@ from .serializers import (
     LoginSerializer,
     ResendVerificationMailSerializer,
     ProfileUpdateSerializer,
+    ProfileDataSerializer,
 )
 from .utilities import (
     check_and_verify_user,
@@ -132,3 +133,32 @@ class ProfileUpdateView(APIView):
         serializer.save()
 
         return Response({'message': 'Profile updated successfully.'}, status=status.HTTP_200_OK)
+
+
+# view to get the user profile data
+class ProfileDataView(APIView):
+    
+    serializer_class = ProfileDataSerializer
+    permission_classes = [IsAuthenticatedVerified]
+
+    def get(self, request):
+        curr_user = request.user
+        curr_user_profile = Profile.objects.get(user=curr_user)
+
+        serializer_data = {
+            'user_email' : curr_user.email,
+            'is_profile_complete' : curr_user_profile.is_profile_complete(),
+            'first_name' : curr_user_profile.first_name,
+            'last_name' : curr_user_profile.last_name,
+            'phone_number' : curr_user_profile.phone_number,
+            'address' : curr_user_profile.address,
+            'district' : curr_user_profile.district,
+            'pincode' : curr_user_profile.pincode,
+            'dateofbirth' : curr_user_profile.dateofbirth,
+            'blood_group' : curr_user_profile.blood_group,
+            'last_donated_on' : curr_user_profile.last_donated_on
+        }
+
+        serializer = self.serializer_class(data=serializer_data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
