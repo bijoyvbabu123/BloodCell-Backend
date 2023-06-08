@@ -1,55 +1,45 @@
 from django.shortcuts import render
 
+from rest_framework.generics import ListAPIView
+
 import base64
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from .telegrambothandlerfunctions import (
+    base_handler,
+)
+from .serializers import (
+    UserTelegramDataSerializer,
+)
+from .models import (
+    TelegramData,
+)
+from users.custompermissions import (
+    IsAuthenticatedVerified,
+)
+
 # Create your views here.
 
 
 class WebHookView(APIView):
-    """
-    =========response of /start
-    {
-    "update_id":734997090,
-    "message":{
-        "message_id":51,
-        "from":{
-            "id":996202131,
-            "is_bot":false,
-            "first_name":"Bijoy",
-            "username":"bijoyvbabu123",
-            "language_code":"en"
-        },
-        "chat":{
-            "id":996202131,
-            "first_name":"Bijoy",
-            "username":"bijoyvbabu123",
-            "type":"private"
-        },
-        "date":1686207037,
-        "text":"/start YnZiMTIzbWlzY0BnbWFpbC5jb20=",
-        "entities":[
-            {
-                "offset":0,
-                "length":6,
-                "type":"bot_command"
-            }
-        ]
-    }
-    }
-    """
     def get(self, request, *args, **kwargs):
-        print(request.data)
-        encoded_email = request.data['message']['text'].split(' ')[1]
-        print(encoded_email)
-        print(base64.urlsafe_b64decode(encoded_email).decode())
+        base_handler(request_data=request.data)
         return Response(status=status.HTTP_200_OK)
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        encoded_email = request.data['message']['text'].split(' ')[1]
-        print(encoded_email)
-        print(base64.urlsafe_b64decode(encoded_email).decode())
+        base_handler(request_data=request.data)
         return Response(status=status.HTTP_200_OK)
+    
+
+# user telegram profile fetch view
+class UserTelegramData(APIView):
+    permission_classes = [IsAuthenticatedVerified]
+    serializer_class = UserTelegramDataSerializer
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        user_telegram_data = TelegramData.objects.get(user=user)
+        serializer = self.serializer_class(user_telegram_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
