@@ -1,4 +1,7 @@
 import base64
+import requests
+
+from django.conf import settings
 
 from users.models import (
    User,
@@ -6,6 +9,17 @@ from users.models import (
 from .models import (
    TelegramData,
 )
+from .messagetemplates import (
+   welcome_message,
+)
+
+
+# send a message to the user
+def send_message(chat_id, message):
+   TELEGRAM_BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
+   send_message_endpoint = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage?chat_id=' + chat_id + '&parse_mode=Markdown&text=' + message
+   response = requests.get(send_message_endpoint)
+   print(response)
 
 
 
@@ -25,6 +39,7 @@ def start_command_handler(request_data):
    decoded_email = base64.urlsafe_b64decode(encoded_email).decode()
    chat_id = str(request_data['message']['chat']['id'])
    assign_chat_id_and_verified_status(email=decoded_email, chat_id=chat_id)
+   send_message(chat_id=chat_id, message=welcome_message)
 
 
 # main handler function
