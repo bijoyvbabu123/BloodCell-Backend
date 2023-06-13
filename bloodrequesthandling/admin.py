@@ -9,7 +9,7 @@ from .models import (
 )
 
 class BloodRequirementAdmin(admin.ModelAdmin):
-    list_display = ('name_of_patient', 'blood_group', 'date_of_donation', 'contact_number', 'no_of_units', 'is_case_verified')
+    list_display = ('name_of_patient', 'blood_group', 'date_of_donation', 'contact_number', 'no_of_units', 'is_case_verified', 'date_of_request')
     list_filter = ('blood_group', 'district', 'is_case_verified')
     search_fields = ('name_of_patient', 'blood_group', 'date_of_donation', 'contact_number', 'no_of_units', 'is_case_verified')
     ordering = ('-date_of_request',)
