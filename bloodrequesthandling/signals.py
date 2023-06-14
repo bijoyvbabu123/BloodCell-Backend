@@ -13,7 +13,7 @@ from telegrambot.models import (
     TelegramData,
 )
 from telegrambot.telegrambothandlerfunctions import (
-    send_blood_request_messages,
+    BloodRequestMessage,
 )
 
 
@@ -43,4 +43,4 @@ def populate_available_donors(sender, instance, created, **kwargs):
         
         print(telegram_ids, type(telegram_ids), "telegram idss")  ########################################################
         # send message to all the telegram ids
-        send_blood_request_messages(chat_ids=telegram_ids, blood_req=instance)
+        BloodRequestMessage.send_blood_request_messages(chat_ids=telegram_ids, blood_req=instance)
