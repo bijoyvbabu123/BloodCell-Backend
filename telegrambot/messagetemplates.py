@@ -24,3 +24,27 @@ No of units : {no_of_units}
 Case : {patient_case}
 Additional info : {additional_info}"""
 
+blood_req_neg_response = """We understand and respect your decision not to donate blood at this time. Everyone has their own personal circumstances and considerations that may prevent them from being able to contribute. We appreciate your honesty and understanding.
+
+Thank you for taking the time to consider our request and for being part of our community. Your compassion and willingness to make a difference are truly appreciated.
+
+If you change your mind, please feel contact the Admin."""
+
+blood_req_pos_response = """Thank you for your willingness to donate blood. Your compassion and generosity are greatly appreciated.
+
+Please contact the Admin and the Patient to coordinate the donation process.
+
+Eligibility Criteria for Blood Donation
+1.Body Weight- Not less than   50kg.
+2. You must be in good health at the time you donate.
+3.You must not donate if you do not meet the minimum haemoglobin level for blood donation.
+4.You cannot donate if you have a cold, flu, sore throat or any other infection.
+5. You cannot donate if you had underwent any immunizations in past one month.
+6.You cannot donate blood if you have donated blood during past 3 months.
+7. You cannot donate if you have consumed alcohol or drugs in past 24 hours.
+8.Women donor should not donate during her menstrual cycles. ( including 1 week before and after periods.)
+9.You cannot donate if you have had ear/body piercing or tattoo in past 6 months.
+10.You cannot donate if you are having antibiotics or any other medications.
+11.A meal is recommended at least 4 hours prior to donation.
+12. You cannot donate if you are having allergies.
+13.You cannot donate if you had underwent any vaccinations in past 6 months."""

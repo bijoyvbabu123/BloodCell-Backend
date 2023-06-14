@@ -28,8 +28,6 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -58,6 +56,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ALLOWED_HOSTS = ['*']
+
+# cors headers settings
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'BloodCellBackend.urls'
 
@@ -116,9 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # setting default authentication model
 AUTH_USER_MODEL = 'users.User'
-
-# cors headers settings
-CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Internationalization

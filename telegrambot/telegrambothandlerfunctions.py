@@ -14,6 +14,8 @@ from .models import (
 from .messagetemplates import (
    welcome_message,
    blood_req_body,
+   blood_req_neg_response,
+   blood_req_pos_response,
 )
 
 TELEGRAM_BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
@@ -72,12 +74,12 @@ class BloodRequestMessage():
 
       BloodRequestThread(chat_ids=chat_ids, blood_req=blood_req, message=message, reply_markup=reply_markup).start()
 
+
 # send a message to the user
 def send_message(chat_id, message):
    send_message_endpoint = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/sendMessage?chat_id=' + chat_id + '&parse_mode=Markdown&text=' + message
    response = requests.get(send_message_endpoint)
    print(response)
-
 
 
 # assign chat_id and set is_telegram_verified to True for the user
@@ -102,6 +104,37 @@ def start_command_handler(request_data):
       pass
 
 
+# blood requirement request response handler 
+def blood_requirement_request_response_handler(request_data):
+   chat_id = str(request_data['callback_query']['message']['chat']['id'])
+   message_id = str(request_data['callback_query']['message']['message_id'])
+   response_data = request_data['callback_query']['data']  # bloodcell$yes$23
+   response_data_split = response_data.split('$')
+
+   def remove_inline_keyboard():
+      remove_keyboard_endpoint = 'https://api.telegram.org/bot' + TELEGRAM_BOT_TOKEN + '/editMessageReplyMarkup'
+      payload = {
+         "chat_id": chat_id,
+         "message_id": message_id,
+         "reply_markup": json.dumps({})
+      }
+      response = requests.post(remove_keyboard_endpoint, data=payload)
+
+   def positive_response():
+      send_message(chat_id=chat_id, message=blood_req_pos_response)
+
+   def negative_response():
+      send_message(chat_id=chat_id, message=blood_req_neg_response)   
+   
+
+   remove_inline_keyboard()
+
+   if response_data_split[1] == 'yes':
+      positive_response()
+   elif response_data_split[1] == 'no':
+      negative_response()
+
+
 # main handler function
 def base_handler(request_data):
    print(request_data)
@@ -110,3 +143,7 @@ def base_handler(request_data):
       if request_data['message']['entities'][0]['type'] == 'bot_command':
          if request_data['message']['text'].split(' ')[0] == '/start':
             start_command_handler(request_data)
+   
+   elif 'callback_query' in request_data and 'reply_markup' in request_data['callback_query']['message']:
+      if 'bloodcell' in request_data['callback_query']['data']:
+         blood_requirement_request_response_handler(request_data)
