@@ -200,8 +200,16 @@ class Profile(models.Model):
     def is_three_months_past_last_donation(self):
         today = date.today()
         three_months_ago = today - timedelta(days=90)
-        if self.last_donated_on < three_months_ago:
-            return True
+        if self.last_donated_on:
+            if self.last_donated_on < three_months_ago:
+                return True
+        return False
+    
+    def is_date_three_months_past_last_donation(self, comp_date):
+        three_months_ago = comp_date - timedelta(days=90)
+        if self.last_donated_on:
+            if self.last_donated_on < three_months_ago:
+                return True
         return False
 
     def is_profile_complete(self):

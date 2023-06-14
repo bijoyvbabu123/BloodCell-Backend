@@ -78,7 +78,7 @@ class BloodRequirement(models.Model):
     )
 
     def __str__(self):
-        return self.name_of_patient + ' - ' + self.blood_group
+        return str(self.id) + " : " + self.name_of_patient + ' - ' + self.blood_group
     
     class Meta:
         verbose_name = 'Blood Requirement'
