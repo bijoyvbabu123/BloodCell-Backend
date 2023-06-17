@@ -11,6 +11,8 @@ from .views import (
     ResendVerificationMailView,
     ProfileUpdateView,
     ProfileDataView,
+
+    SampleView,
 )
 
 
@@ -22,4 +24,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # token refresh
     path('profileupdate/', ProfileUpdateView.as_view(), name='profileupdate'), # profile update
     path('getprofiledata/', ProfileDataView.as_view(), name='getprofiledata'), # get profile data
+
+    path('sampleview/', SampleView.as_view(), name='sampleview'), # sample view
 ]

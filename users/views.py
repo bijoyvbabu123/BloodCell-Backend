@@ -162,3 +162,17 @@ class ProfileDataView(APIView):
         serializer = self.serializer_class(data=serializer_data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+
+
+
+
+class SampleView(APIView):
+    
+    def get(self, request):
+        return Response({'message': 'GET.............Hello World!'}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        return Response({'message': 'POST............Hello World!'}, status=status.HTTP_200_OK)
