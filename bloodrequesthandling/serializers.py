@@ -72,3 +72,9 @@ class FindBloodSerializer(serializers.Serializer):
             additional_info=validated_data.get('additional_info', None),
             no_of_units=validated_data['no_of_units'],
         )
+
+
+class LiveRequirementsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BloodRequirement
+        fields = '__all__'

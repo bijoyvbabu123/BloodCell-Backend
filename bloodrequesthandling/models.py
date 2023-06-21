@@ -83,10 +83,25 @@ class BloodRequirement(models.Model):
     class Meta:
         verbose_name = 'Blood Requirement'
         verbose_name_plural = 'Blood Requirements'
+        ordering = ['-date_of_donation']
     
     def is_case_live(self):
         # return True if the date_of_donation is greater than or equal to today's date
         return self.date_of_donation > date.today()
+    
+    # @staticmethod
+    # def get_all_live_cases():
+    #     # return all live cases and verified cases
+    #     return BloodRequirement.objects.filter(date_of_donation > date.today() , is_case_verified=True)
+    #     # return BloodRequirement.objects.filter(is_case_live=True)
+
+    @staticmethod
+    def get_live_verified_cases():
+        today = date.today()
+        return BloodRequirement.objects.filter(
+            is_case_verified=True,
+            date_of_donation__gte=today
+        )
 
 
 # model for available donors for each requirements
