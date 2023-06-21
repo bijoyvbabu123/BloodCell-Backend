@@ -2,6 +2,7 @@ import base64
 import requests
 import json
 import threading
+import datetime
 
 from django.conf import settings
 
@@ -16,6 +17,10 @@ from .messagetemplates import (
    blood_req_body,
    blood_req_neg_response,
    blood_req_pos_response,
+)
+from bloodrequesthandling.models import (
+   BloodRequirement,
+   AvailableDonors,
 )
 
 TELEGRAM_BOT_TOKEN = settings.TELEGRAM_BOT_TOKEN
@@ -122,9 +127,23 @@ def blood_requirement_request_response_handler(request_data):
 
    def positive_response():
       send_message(chat_id=chat_id, message=blood_req_pos_response)
+      blood_req_id = response_data_split[2]
+      blood_req = BloodRequirement.objects.get(id=blood_req_id)
+      donor_user = TelegramData.objects.get(chat_id=chat_id).user
+      available_donor_instance = AvailableDonors.objects.get(user=donor_user, blood_requirement=blood_req)
+      available_donor_instance.is_willing_to_donate = True
+      available_donor_instance.approved_time = datetime.datetime.now()
+      available_donor_instance.save()
 
    def negative_response():
       send_message(chat_id=chat_id, message=blood_req_neg_response)   
+      blood_req_id = response_data_split[2]
+      blood_req = BloodRequirement.objects.get(id=blood_req_id)
+      donor_user = TelegramData.objects.get(chat_id=chat_id).user
+      available_donor_instance = AvailableDonors.objects.get(user=donor_user, blood_requirement=blood_req)
+      available_donor_instance.is_willing_to_donate = False
+      available_donor_instance.approved_time = datetime.datetime.now()
+      available_donor_instance.save()
    
 
    remove_inline_keyboard()

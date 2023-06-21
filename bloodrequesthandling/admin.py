@@ -19,7 +19,7 @@ class AvailableDonorsAdmin(admin.ModelAdmin):
     list_display = ('user', 'blood_requirement', 'is_willing_to_donate', 'approved_time')
     list_filter = ('is_willing_to_donate', 'blood_requirement__blood_group', 'blood_requirement__id')
     search_fields = ('user__email', 'blood_requirement__name_of_patient', 'is_willing_to_donate', 'blood_requirement__id')
-    ordering = ('user',)
+    ordering = ('-blood_requirement', 'approved_time')
 
 
 class CompletedDonationsAdmin(admin.ModelAdmin):
